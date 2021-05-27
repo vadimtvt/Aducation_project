@@ -1,0 +1,80 @@
+{% extends 'basic_template.html' %}
+{% block title %}Профиль {{ user.first_name }} {{ user.last_name }}{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="content_box mb-5">
+    <div class="profile_block mr-0 mt-5 mb-5 ml-3 position-relative">
+        <div class="img_block d-inline-block position-relative">
+            <img class="img-thumbnail profile_img"  style="width: 10rem; border-color: #183E87;" src="{% static user.profile.user_img %}" alt='ICON'>
+            <form method="POST" enctype="multipart/form-data" class="form_par" id="form_pic_id">
+                {% csrf_token %}
+                {{ form_pic }}
+{#                <button type="submit" class="save btn btn-default">Update</button>#}
+            </form>
+        </div>
+
+        <div class="profile_title d-inline-block position-absolute">
+            <div class="profile_name a_ml3">
+                <span class="h2 prof_span">{{user.first_name}}</span>
+                <span class="h2 prof_span">{{user.last_name}}</span>
+                <p class="text-muted pt-2 pl-1 h5 font-weight-light">{% if user.profile.is_teacher %} Учитель {% else %} Ученик {% endif %} </p>
+            </div>
+        </div>
+    </div>
+    <div class="description_block mb-3 mt-5 pt-5">
+        <span class="ml-3 h2 title_block_" style="font-family: 'Bebas Neue', 'Oswald', sans-serif">Доступные вам курсы:</span>
+    </div>
+    <div class="row row-cols-2 row-cols-md-1 mr-0 ml-0 align-items-center center_card">
+
+        {% for i in course_list %}
+            {% if i.user_id.user_id == user.id and not i.course_id.course_teacher.user.profile.user_id == user.profile.user_id%}
+                <div class="card mb-3" style="max-width: 1100px; min-width: 75%;">
+                      <div class="row no-gutters">
+                        <div class="col-md-4">
+                          <img src="{% static i.course_id.course_img%}" class="card-img" alt="ICON" style="border-radius: 25px;">
+                        </div>
+                        <div class="col-md-8">
+                          <div class="card-body">
+                            <h5 class="card-title mb-0 title-nav h3">{{ i.course_id.name }}</h5>
+                            <p class="card-text mb-3 font-weight-lighter font-italic"><small class="text-muted">{{ i.course_id.update_time }}</small></p>
+                            <p class="card-text mb-5 font-weight-lighter">{{ i.course_id.course_description }}</p>
+                            <a href="/course/{{ i.course_id.url }}" class="mb-4 btn btn-warning2 align-items-end justify-content-end float-right"><span class="btn_size_ title-nav">Пройти!</span></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if user.profile.is_teacher %}
+        <div class="description_block mb-3 mt-5 pt-5">
+            <span class="ml-3 h2 title_block_" style="font-family: 'Bebas Neue', 'Oswald', sans-serif">Курсы, которые Вы ведете:</span>
+        </div>
+        <div class="row row-cols-2 row-cols-md-1 mr-0 ml-0 align-items-center center_card">
+        {% for i in course %}
+            {% if i.course_teacher.user.profile.user_id == user.profile.user_id %}
+                <div class="card mb-3" style="max-width: 1100px; min-width: 75%;">
+                      <div class="row no-gutters">
+                        <div class="col-md-4">
+                          <img src="{% static i.course_img%}" class="card-img" alt="ICON" style="border-radius: 35px;">
+                        </div>
+                        <div class="col-md-8">
+                          <div class="card-body">
+                            <h5 class="card-title mb-0 title-nav h3">{{ i.name }}</h5>
+                            <p class="card-text mb-3 font-weight-lighter font-italic"><small class="text-muted">{{ i.update_time }}</small></p>
+                            <p class="card-text mb-5 font-weight-lighterer">{{ i.course_description }}</p>
+                            <a href="/course/{{ i.url }}" class="mb-4 btn btn-warning2 align-items-end justify-content-end float-right"><span class="btn_size_ title-nav">Пройти!</span></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            {% endif %}
+        {% endfor %}
+       </div>
+    {% endif %}
+    </div>
+{% endblock %}
+{#<script>#}
+{#    document.getElementById("file").onchange = function() {#}
+{#    document.getElementById("form_pic_id").submit();};#}
+{#</script>#}

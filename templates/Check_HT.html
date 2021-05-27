@@ -1,0 +1,139 @@
+{% extends 'basic_template.html' %}
+{% block title %}Курс {{course_cur.name}}{% endblock %}
+{% load static %}
+{% block content %}
+<div class="content_box">
+{% if user.profile.user_id == course_cur.course_teacher.user.profile.user_id and user.profile.is_teacher %}
+
+    <form method="post" class="mt-5 mb-5" enctype="multipart/form-data">
+        {% csrf_token %}
+        <a href="../{{ lesson.url }}" class="position-absolute mt-2">
+            <img src="{% static 'icons/ReturnIcon.png' %}" alt="" style="max-width: 44px; max-height: 44px;">
+        </a>
+        <div class="title_edit_block mb-0 d-flex justify-content-center">
+            <span class="title-nav title_block_ h1  ">{{ cur_ht.fk_user.user.first_name }} {{ cur_ht.fk_user.user.last_name }}</span>
+        </div>
+        <div class="title_edit_block d-flex justify-content-center mt-0">
+            <span class="font-italic font-weight-light text-muted">Курс - {{ course_cur.name }}</span>
+        </div>
+        <div class="title_edit_block d-flex justify-content-center">
+            <span class="font-italic font-weight-light text-muted">Урок - {{ lesson.lesson_title }}</span>
+        </div>
+
+        <div class="">
+            <div class=" w-100 mt-0 mb-0">
+                    <span class="h2 title-nav   mb-0 title_block_ ">Задание:</span>
+            </div>
+            <div class="ml-3 mt-2">
+                {{ lesson.HomeTask_description }}
+            </div>
+        </div>
+
+            <div class=" w-100">
+                <div class="w-100 mt-5 mb-2">
+                <div class=" w-100 mt-0 mb-0">
+                    <span class="h2 title-nav   mb-0 title_block_ ">Прикрепленные файлы:</span>
+                </div>
+                    <div class="text-center mt-3 d-flex justify-content-center">
+    {% if cur_ht.HomeTask_attached_files %}
+                            <div class="card text-white bg-secondary mb-3 " style="max-width: 18rem;">
+                                  <div class="card-header h5" style="color: white;">
+                                      Файл <br> <span class="font-weight-lighter font-italic">{{ cur_ht.update_time }}</span>
+                                  </div>
+                                  <div class="card-body">
+                                    <h5 class="card-title font-weight-lighter">{{cur_ht.HomeTask_attached_files.name }}</h5>
+                                      <a href="{{ cur_ht.HomeTask_attached_files.url }}" class="btn btn-outline-warning2 mt-2" download>Скачать</a>
+                                  </div>
+                             </div>
+                                    {% else %}
+                                <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+                                    <div class="card-header h5">
+                                          Файл не приложен</span>
+                                      </div>
+                                      <div class="card-body">
+
+                                      </div>
+                                 </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="w-100 mb-2 mt-5">
+                        <div class="w-100 mt-2 mb-1 ">
+                                            <div class="w-100 mt-0">
+                            <span class="h2 title-nav   mt-5 mb-1 title_block_">Отметить как приянтое:</span>
+                                            </div>
+                            <div class="custom-control custom-checkbox mt-3 mb-1 ml-3">
+                              {{ home_task_form.is_passed }}
+                              <label class="custom-control-label  " for="id_is_passed">Зачтено!</label>
+                            </div>
+                         </div>
+                     </div>
+                     <div class="w-100 mb-2 mt-5">
+                        <div class="w-100 mt-2 mb-1 ">
+                                            <div class="w-100 mt-0">
+                            <span class="h2 title-nav   mt-5 mb-1 title_block_">Оценка:</span>
+                                            </div>
+                            <div class="custom-control mt-2" style="width: 30vw;">
+                              {{ home_task_form.mark }}
+                            </div>
+                         </div>
+                     </div>
+<div class="mt-1 mb-0 d-flex justify-content-center">
+    <button type="submit" class="btn btn-outline-success2 mb-5 mt-5 btn-lg ml-0 ">Применить</button>
+
+ </div>
+
+    </form>
+    <div class="comment_block">
+    <a href="" name="comment"></a>
+    <div class="mb-2">
+        <span class="title-nav h2   title_block_">Комментарии к Д\З:</span><br>
+    <ul class="list-group mt-3 ml-3" style='border-radius: 20px'>
+    {% for comment in comments %}
+        <li class="list-group-item p-0" style="border-radius: 25px">
+            <div class="media ml-4 mt-3 mb-3">
+              <img src="{% static comment.fk_user.user.profile.user_img%} " class="mr-4 img-thumbnail" alt="..."  style="max-width: 64px; max-height: 64px; {% if comment.fk_user.user.id == course_cur.course_teacher.user.id %} border-color: #09af00; {% else %} border-color: #183E87; {% endif %}">
+              <div class="media-body overflow-auto">
+                <span class="mt-0 h5">{{ comment.fk_user.user.first_name }} {{ comment.fk_user.user.last_name}}</span>
+                   {% if comment.fk_user.user.id == course_cur.course_teacher.user.id %}
+                        <span class="ml-1 text-muted font-italic">(Преподаватель)</span>
+                    {% endif %}
+              {% if comment.fk_user.user.id == user.id or course_cur.course_teacher.user.id == user.id %}
+                <a href="../{{ lesson.url }}/DelComment/{{ comment.id }}" class="float-right mr-3 font-weight-light">
+                    <img src="{% static 'icons/del.png' %}" alt="Удалить" style="max-height: 22px; max-width: 22px;">
+                </a>
+              {% endif %}
+                  <br><span class="text-muted font-weight-light">{{ comment.creation_time }}</span>
+                  <br>
+                  <span class="">{{ comment.comment_text }}</span>
+              </div>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+    </div>
+        <div class="add_comment mt-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="ml-3 h-25">{{ comment_form.comment_text }}</div>
+
+                <div class="url_hide position-absolute">{{ comment_form.fk_user }} {{ comment_form.fk_home_task }}</div>
+                <div class="ml-3 d-flex justify-content-start">
+                    <button class="btn-lg btn btn-success2 mt-3 mb-5" type="submit">Добавить комментарий</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+{{ errors }}
+
+{% endif %}
+{% endblock %}

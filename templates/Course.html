@@ -1,0 +1,80 @@
+{% extends 'basic_template.html' %}
+{% block title %}Курс {{course_cur.name}}{% endblock %}
+{% load static %}
+{% block content %}
+{##}
+{#    <div class="course_title mt-5">#}
+{#        <img src="{% static course_cur.course_img %}" class="img-thumbnail w-25" alt="Img">#}
+{#        <div class="title_block font-weight-bolder d-inline-block position-absolute ml-4"><h3 class="card-title">{{ course_cur.name }}</h3></div>#}
+{#        <div class="description_block"><p class="card-text">{{ course_cur.course_description }}</p></div>#}
+{#    </div>#}
+{% for record in course_list %}
+    {% if record.user_id.user.profile.user_id == user.profile.user_id%}
+        {% if record.course_id.id == course_cur.id %}
+            <div class="card border-0 block_card d-flex justify-content-center align-items-center align-self-center" style="border-radius: 0">
+            <div class="card w-100 text-white border-0 card_100vh" style="border-radius: 0; background: url({% static course_cur.course_img %}) 50%/cover no-repeat;">
+                  <div class="card-img-overlay pt-5 card_bloack_text d-flex justify-content-center" style="">
+                      <div class="a_mt3 text_block">
+                         <h1 class="card-title mb-0 h1 a_mt3" style="color: white;">{{ course_cur.name }}
+                             {% if course_cur.course_teacher.user_id == user.profile.user_id and user.profile.is_teacher%}
+                                 <a href="EditPage" ><img class="mb-4" src="{% static 'icons/Edit.png' %}" alt="" style="max-width: 16px; max-height: 16px; position:absolute; margin-left: 10px;"></a>
+                          {% endif %}
+                          </h1>
+                         <p class="card-text text-muted mt-2">{{ course_cur.update_time }}</p>
+                          <div class="sep_line"></div>
+                         <p class="card-text mt-5 font-weight-light h-25">{{ course_cur.course_description }}</p>
+
+                          <p class="text-muted a_mt3">Преподаватель курса: {{ course_cur.course_teacher.user.last_name }} {{ course_cur.course_teacher.user.first_name }} </p>
+{#                          <p class="text-warning">Ваш Преподаватель: {{ course_cur.course_teacher.user.last_name }} {{ course_cur.course_teacher.user.first_name }} </p>#}
+                      </div>
+
+                  </div>
+            </div>
+        </div>
+
+<div class="content_box mb-5">
+    <div class="d-flex justify-content-center align-items-center text-center h2 mt-5 title-nav"><span class="title_block_">Уроки курса:</span></div>
+    <div class="lessons_block mt-5">
+    
+    <ul class="list-group">
+        {% for i in lessons %}
+            {% if i.fk_course.id == course_cur.id %}
+                {% if not i.is_hidden or course_cur.course_teacher.user.profile.user_id == user.profile.user_id%}
+
+                      <li class="list-group-item card_small">
+                          <span class="font-weight-bold item_title">{{ i.lesson_title|slice:":60" }}</span>
+                          <a href="{{ i.url }}" class="float-right btn btn-outline-success2 title-nav item_btn"><span class="btn_size_">Перейти</span></a>
+                              {% if course_cur.course_teacher.user.profile.user_id == user.profile.user_id %}
+                                <a href="{{ i.url }}/EditPage" class="float-right mr-3 font-weight-light font-italic edit_span item_edit">Редактировать</a>
+                            {% endif %}
+
+                          <br class="item_br">
+                          <span class="text-muted text-light item_uptime">{{ i.update_time }}</span>
+                             {% if i.is_hidden %}
+                                 <img class="float-right mr-3 item_show" src="{% static 'icons/hide.png' %}" alt="Скрыт Урок" style="max-height: 20px; max-width: 20px;">
+{#                                <span class="text-muted mr-3 float-right">Урок скрыт</span>#}
+                             {% endif %}
+                      </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% if course_cur.course_teacher.user.profile.user_id == user.profile.user_id %}
+        <a href="AddLesson">
+        <li class="list-group-item" style="border-bottom-left-radius: 222px; border-bottom-right-radius: 222px; cursor: pointer;">
+            <div class="add_block d-flex justify-content-center">
+                <img src="{% static 'icons/add.png' %}" alt="ADD" style="max-width: 42px; max-height: 42px;">
+            </div>
+        </li>
+        </a>
+    {% endif %} 
+      </ul>
+    </div>
+</div>
+    {% endif %}
+     {% endif %}
+{% endfor %}
+{% endblock %}
+{#<script>#}
+{#    document.getElementById("file").onchange = function() {#}
+{#    document.getElementById("form_pic_id").submit();};#}
+{#</script>#}

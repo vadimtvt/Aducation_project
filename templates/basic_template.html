@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}WAY IT{% endblock %}</title>
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static "css/basic.css" %}">
+    <link rel="stylesheet" href="{% static "css/Dropdown.css" %}">
+    <link rel="stylesheet" href="{% static "css/styles.css" %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicons/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicons/site.webmanifest' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="mask-icon" href="{% static 'favicons/safari-pinned-tab.svg' %}" color="#5bbad5">
+
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+
+<body style="height: 100vh;">
+<div class="wrapper h-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="z-index: 1;">
+      <a href="/accounts/profile/" class="text-white h1 title-nav text-warning2 a_ml3 mb-0 logo_">WAY IT</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample06" aria-controls="navbarsExample06" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample06">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item a_ml3">
+                <span class="nav-link h5 title-nav disabled font-weight-lighter">
+                    {% if user.profile.is_teacher %}
+                        Учитель
+                    {% else %}
+                        Ученик
+                    {% endif %}   - {{ user.first_name }}
+                </span>
+            </li>
+
+        {% if request.path == '/accounts/profile/' %}
+            <li class="nav-item active a_ml3">
+                <a class="nav-link h5 title-nav" href="/accounts/profile/">Профиль<span class="sr-only">(current)</span></a>
+            </li>
+        {% else %}
+            <li class="nav-item a_ml3 ">
+                <a class="nav-link h5 title-nav" href="/accounts/profile/">Профиль<span class="sr-only">(current)</span></a>
+            </li>
+        {% endif %}
+        {% if request.path == '/accounts/profile/calendar' %}
+          <li class="nav-item a_ml3 active">
+            <a class="nav-link h5 title-nav" href="/accounts/profile/calendar">Календарь</a>
+          </li>
+        {% else %}
+          <li class="nav-item a_ml3">
+            <a class="nav-link h5 title-nav" href="/accounts/profile/calendar">Календарь</a>
+          </li>
+        {% endif %}
+
+            <li class="nav_ nav-item a_ml3">
+              <ul class="topmenu">
+                <li><span class="down nav-link pointer_ h5 title-nav">Ваши курсы <img class="arrow_" height="14px" width="14px" src="{% static 'icons/caret-down-fill.svg' %}" alt=""></span>
+                  <ul class="submenu">
+                    {% for i in course_list %}
+                        {% if i.user_id.user_id == user.id%}
+                            <li><a href="/course/{{ i.course_id.url }}"><span class="title-nav" style="font-size: 1rem">{{ i.course_id.name }}</span></a></li>
+                        {% endif %}
+                    {% endfor %}
+                  </ul>
+                </li>
+              </ul>
+            </li>
+
+        </ul>
+        <a class="text-warning2 a_ml3 my-sm-0 mr-5 font-weight-bolder nav-link pl-0" href="/accounts/logout/"><span class="h5 title-nav exit_btn">Выйти</span></a>
+      </div>
+    </nav>
+
+    <div class="main_content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div class="text-center w-100 bg-dark pt-2 pb-2 footer">
+        <p class="title-nav btn_size_ text-white mt-2 mb-2">&copy;WayIT</p>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>

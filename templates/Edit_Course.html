@@ -1,0 +1,36 @@
+{% extends 'basic_template.html' %}
+{% block title %}Курс {{course_cur.name}}{% endblock %}
+{% load static %}
+{% block content %}
+<div class="content_box">
+{% if user.profile.user_id == course_cur.course_teacher.user.profile.user_id and user.profile.is_teacher %}
+
+    <form method="post" class="mt-5 mb-5" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="title_edit_block d-flex justify-content-center mb-4 ">
+            <span class="title-nav title_block_ h1 font-weight-bold">Редактирование курса</span>
+        </div>
+        {% for field in FormEdit %}
+            <div class="justify-content-center d-flex w-100">
+                <div class="w-75 mt-3 mb-4 ">
+                    <span class="h2 title-nav mt-4 mb-1 title_block_">{{ field.label }}:</span>
+                    <br>
+                    {{ field }}
+                </div>
+
+            </div>
+        {% endfor %}
+<div class="mt-3 mb-1 d-flex justify-content-center">
+    <button type="submit" class="btn btn-outline-success mb-1 mt-5 btn-lg btn-block" style="max-width: 400px">Применить</button>
+ </div>
+<div class="mt-3 mb-1 d-flex justify-content-center">
+    <a href="../{{course_cur.url}}" class="btn btn-outline-warning mb-5 btn-lg btn-block" style="max-width: 400px">Вернуться не изменяя</a>
+ </div>
+    </form>
+</div>
+
+
+
+{% endif %}
+{% endblock %}
